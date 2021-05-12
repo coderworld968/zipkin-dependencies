@@ -28,7 +28,15 @@ public final class ZipkinDependenciesJob {
   /** Runs with defaults, starting today */
   public static void main(String[] args) throws UnsupportedEncodingException {
     String[] jarPath = pathToUberJar();
-    long day = args.length == 1 ? parseDay(args[0]) : System.currentTimeMillis();
+//    long day = args.length == 1 ? parseDay(args[0]) : System.currentTimeMillis();
+    long day = System.currentTimeMillis();
+    String esQuery = null;
+    if(args.length == 2){
+      day = parseDay(args[0]);
+      esQuery = args[1];
+    }
+
+
     String storageType = System.getenv("STORAGE_TYPE");
     if (storageType == null) {
       throw new IllegalArgumentException("STORAGE_TYPE not set");
@@ -74,6 +82,7 @@ public final class ZipkinDependenciesJob {
           .logInitializer(logInitializer)
           .jars(jarPath)
           .day(day)
+          .esQuery(esQuery)
           .conf(sparkConf)
           .build()
           .run();
